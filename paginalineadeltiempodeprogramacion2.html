@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Línea del Tiempo de la Programación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4f7fc;
+            --card-bg: #ffffff;
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --accent: #06b6d4;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 20px 30px -10px rgba(79, 70, 229, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #eef2ff 0%, #f4f7fc 50%, #e0e7ff 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 50px auto;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #4f46e5, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--accent) 100%);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            margin-bottom: 30px;
+        }
+
+        .left { left: 0; }
+        .right { left: 50%; }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            right: -9px;
+            background-color: var(--card-bg);
+            border: 4px solid var(--primary);
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .right::after { left: -9px; }
+
+        .timeline-item:hover::after {
+            background-color: var(--accent);
+            transform: scale(1.3);
+        }
+
+        .content {
+            padding: 24px;
+            background-color: var(--card-bg);
+            position: relative;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .timeline-item:hover .content {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .year-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .content h3 {
+            font-size: 1.4rem;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .content p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .btn-more {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-more:hover {
+            opacity: 0.95;
+            transform: scale(1.02);
+        }
+
+        .more-info {
+            display: none;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px dashed #e2e8f0;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .more-info.active {
+            display: block;
+        }
+
+        .more-info p {
+            font-weight: 600;
+            color: var(--primary);
+            background: #eef2ff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+
+        .gif-box {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #f1f5f9;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            margin-top: 12px;
+        }
+
+        .gif-box img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media screen and (max-width: 768px) {
+            .timeline::after { left: 31px; }
+            .timeline-item { width: 100%; padding-left: 70px; padding-right: 25px; }
+            .left, .right { left: 0; }
+            .timeline-item::after { left: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🚀 Historia de la Programación</h1>
+        <p>Un recorrido interactivo y divertido por los hitos que cambiaron el mundo del código.</p>
+    </header>
+
+    <div class="timeline">
+
+        <!-- 1. Ada Lovelace -->
+        <div class="timeline-item left">
+            <div class="content">
+                <span class="year-badge">1801</span>
+                <h3>¿Programar sin computadora?</h3>
+                <p>magina querer darle órdenes a una máquina… sin tener una computadora.
+
+Eso hizo Joseph Marie Jacquard: utilizó tarjetas con agujeros para indicarle a un telar qué diseño debía hacer.
+
+Un agujero podía cambiar una instrucción.
+
+Y aunque parecía solamente una máquina para fabricar telas, la idea era revolucionaria:
+
+“Una máquina puede seguir instrucciones automáticamente.”</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: "Antes de programar computadoras ya se programaba con máquinas" La Z3 fue la primera computadora digital en funcionamiento, programable y completamente automática. El original fue destruido en la Segunda Guerra Mundial.</p>
+                    <div class="gif-box">
+                        <img src="https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif" alt="Math Thinking Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Lenguaje Ensamblador -->
+        <div class="timeline-item right">
+            <div class="content">
+                <span class="year-badge">1842</span>
+                <h3>Una mujer vio el futuro antes que los demás</h3>
+                <p>Ada Lovelace no tenía una computadora en su escritorio.
+
+De hecho, las computadoras modernas todavía ni existían.
+
+Aun así, escribió un algoritmo pensado para que una máquina pudiera realizar cálculos.
+
+Fue más allá de calcular: imaginó que las máquinas podrían manipular símbolos y realizar tareas siguiendo instrucciones.
+
+La programación todavía no existía como la conocemos… pero ella ya estaba pensando como programadora.</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: "La programación comenzó primero como una idea"</p>
+                    <div class="gif-box">
+                        <img src="https://media1.tenor.com/images/d1fdc4e960f46f40e564de5ed21f99b9/tenor.gif?itemid=18216078" alt="Matrix Code Typing Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Fortran & Cobol -->
+        <div class="timeline-item left">
+            <div class="content">
+                <span class="year-badge">1936</span>
+                <h3>¿Y si una máquina pudiera pensar en pasos?</h3>
+                <p>Alan Turing planteó una idea que cambiaría la computación:
+
+Una máquina podía seguir una serie de instrucciones para resolver problemas.
+
+Entrada → instrucciones → resultado
+
+Parece algo básico hoy…
+
+pero esa forma de pensar está detrás de muchísimos programas actuales</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: "Todo programa comienza con una serie de pasos"</p>
+                    <div class="gif-box">
+                        <img src="https://media.tenor.com/bWPJhOHapzMAAAAM/norcal-ludo.gif" alt="Vintage Computer Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Lenguaje C -->
+        <div class="timeline-item right">
+            <div class="content">
+                <span class="year-badge">1940</span>
+                <h3>Una computadora del tamaño de un cuarto</h3>
+                <p>Llegó ENIAC.
+
+No era una laptop.
+
+No era una PC.
+
+Ni siquiera era pequeña.
+
+Era una enorme máquina electrónica construida para realizar cálculos.
+
+Uno de sus primeros objetivos fue calcular tablas de tiro de artillería.
+
+La era de las computadoras electrónicas había comenzado.</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: "Las computadoras eran grandes pero la idea apenas empezaba"</p>
+                    <div class="gif-box">
+                        <img src="https://i.gifer.com/1FA.gif" alt="Hacker Typing Fast Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. C++ -->
+        <div class="timeline-item left">
+            <div class="content">
+                <span class="year-badge">1957</span>
+                <h3>Programar dejó de ser difícil</h3>
+                <p>Hasta ese momento, programar significaba estar muy cerca del funcionamiento de la máquina.
+
+Entonces apareció FORTRAN.
+
+Matemáticas
+
+Ingeniería
+
+Ciencia
+
+Por primera vez, los programadores podían escribir instrucciones mucho más cercanas a la forma en que las personas expresan los problemas.
+
+La computadora empezó a entender algo más parecido al lenguaje humano.</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: El código comenzó a hablar el idioma de las matemáticas</p>
+                    <div class="gif-box">
+                        <img src="https://media.giphy.com/media/13HgwGsXF0aiGY/giphy.gif" alt="Super Saiyan Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Python -->
+        <div class="timeline-item right">
+            <div class="content">
+                <span class="year-badge">1959</span>
+                <h3>El lenguaje que termino en los bancos</h3>
+                <p>Nació COBOL.
+
+¿Su objetivo?
+
+Hacer que las computadoras pudieran manejar información de empresas.
+
+pagos
+
+Bancos
+
+Registros
+
+Negocios
+
+Y aquí viene lo interesante:
+
+COBOL es tan antiguo que nació antes de que el ser humano llegara a la Luna</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: La programación salió de los laboratorios y entró a las empresas</p>
+                    <div class="gif-box">
+                        <img src="https://media.giphy.com/media/LmNwrBhejkK9EFP504/giphy.gif" alt="Python Snake Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. Java & JavaScript -->
+        <div class="timeline-item left">
+            <div class="content">
+                <span class="year-badge">1964</span>
+                <h3>Progrmar ya no era solo para expertos</h3>
+                <p>Apareció BASIC.
+
+La idea era sencilla:
+
+“¿Por qué no hacer que aprender programación sea más fácil?”
+
+Así empezó a acercarse la programación a estudiantes y usuarios de computadoras personales.
+
+La programación comenzó a salir de los laboratorios.</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: Programar déjo de ser solo para especialistas</p>
+                    <div class="gif-box">
+                        <img src="https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif" alt="Magic Web Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. Era Moderna / IA -->
+        <div class="timeline-item right">
+            <div class="content">
+                <span class="year-badge">1969-1973</span>
+                <h3>El lenguaje que cambió las reglas</h3>
+                <p>Dennis Ritchie desarrolla C.
+
+Y aquí empieza una de las grandes historias de la programación.
+
+C fue utilizado para desarrollar partes importantes de Unix y terminó influyendo en muchísimos lenguajes posteriores.
+
+C++
+
+Java
+
+C#
+
+C se convirtió en uno de los grandes pilares de la programación moderna</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: "A veces, para avanzar no necesitas empezar de cero...necesitas mejorar lo que ya funciona."</p>
+                    <div class="gif-box">
+                        <img src="https://media.giphy.com/media/B1CrvUCoMxhy8/giphy.gif" alt="Cat Programmer Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                <!-- 9. Java & JavaScript -->
+        <div class="timeline-item left">
+            <div class="content">
+                <span class="year-badge">1983</span>
+                <h3>C se hace más poderoso</h3>
+                <p>Después de todo lo que C ya podía hacer, llegó C++ para llevar las cosas un paso más allá.
+
+Bjarne Stroustrup tomó C y le agregó nuevas posibilidades, entre ellas la programación orientada a objetos.
+
+¿Y para qué servía esto? 
+
+Para poder organizar programas cada vez más grandes y complejos.
+
+Videojuegos
+
+Software
+
+Aplicaciones de alto rendimiento</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: C++ permitió que los programadores trabajaran con proyectos más estructurados. </p>
+                    <div class="gif-box">
+                        <img src="https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyMW4ybDk1cm00cGZwbGVnc2lwYmEwcDhyazBjdnpyZTlpNWR1czU1cCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/w5eFyOHmkS8uc/200_d.gif" alt="Magic Web Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+                <!-- 10. Java & JavaScript -->
+        <div class="timeline-item right">
+            <div class="content">
+                <span class="year-badge">1990</span>
+                <h3>Internet lo cambia todo</h3>
+                <p>Y aquí la historia da un giro enorme.
+
+Las computadoras ya no estaban solamente trabajando por su cuenta. Con la llegada de la World Wide Web, comenzaron a conectarse entre sí y apareció una nueva necesidad:
+
+¿Cómo hacemos que una computadora pueda mostrar información y responder a las personas a través de Internet?
+
+Así comenzaron a tomar fuerza cosas que hoy vemos todos los días (y que, al dar un solo clic, avanzan a la siguiente):
+
+páginas web
+
+Tiendas online
+
+Servicios
+
+Buscadores
+
+</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: "La computadora dejó de estar sola: ahora podía hablar con el mundo" </p>
+                    <div class="gif-box">
+                        <img src="https://i.pinimg.com/originals/e6/01/57/e6015747a11187be3a07586bf3674bca.gif" alt="Magic Web Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                
+                <!-- 11. Java & JavaScript -->
+        <div class="timeline-item left">
+            <div class="content">
+                <span class="year-badge">1991</span>
+                <h3>Python: menos complicaciones</h3>
+                <p>Mientras Internet comenzaba a crecer, apareció otro protagonista.
+
+Guido van Rossum creó Python con una idea bastante clara: hacer que el código fuera más fácil de leer.
+
+Y esa característica terminó siendo una de sus mayores ventajas.
+
+Con el paso del tiempo, Python comenzó a utilizarse en áreas muy diferentes.
+
+Inteligencia artificial
+
+Análisis de datos
+
+Ciencia
+
+Desarrollo web
+
+Automatización
+
+</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: "Que algo sea sencillo de entender no significa que tenga que ser sencillo de hacer." </p>
+                    <div class="gif-box">
+                        <img src="https://www.tuexperto.com/wp-content/uploads/2017/02/giphy-2.gif" alt="Magic Web Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+                
+                <!-- 12. Java & JavaScript -->
+        <div class="timeline-item right">
+            <div class="content">
+                <span class="year-badge">2001</span>
+                <h3>C# llega al mundo de Microsoft</h3>
+                <p>Y aquí está lo interesante:
+
+Un mismo lenguaje puede servir para crear una aplicación y, en otro proyecto, ayudar a construir un videojuego completo.
+</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: "El código no crea solo programas temabién crea mundos."</p>
+                    <div class="gif-box">
+                        <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ295cnlyejdiODh0anduN3J4MzZuNDUzMHNmbTA5aWV1OWI3ODE4diZlcD12MV9naWZzX3NlYXJjaCZjdD1n/AzXwvGVdvtp1KD1G2O/giphy.gif" alt="Magic Web Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                       
+                <!-- 13. Java & JavaScript -->
+        <div class="timeline-item left">
+            <div class="content">
+                <span class="year-badge">2010</span>
+                <h3>La programacón  se mete en la bolsa del pantalón</h3>
+                <p>Aquí ya no hablamos solamente de computadoras.
+
+La tecnología comenzó a acompañarnos prácticamente a todas partes más en videojuegos.
+
+Y con esta nueva realidad también cobraron importlenguajes como Kotlin y Swift, utilizados en el desarrollo móvil.
+</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: "Todo cambia y en este momento avnaza más la tecnología."</p>
+                    <div class="gif-box">
+                        <img src="https://media1.tenor.com/m/RUKn7TdDtsIAAAAC/ted.gif" alt="Magic Web Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                       
+                <!-- 14. Java & JavaScript -->
+        <div class="timeline-item right">
+            <div class="content">
+                <span class="year-badge">2020-2026</span>
+                <h3>¿Y si la programación también nos ayuda?</h3>
+                <p>Y llegamos a la etapa que estamos viviendo actualmente.
+
+Programar ya no significa necesariamente escribir miles de líneas de código completamente solo.
+
+Ahora existen herramientas que pueden ayudar a:
+
+Generar código
+
+Explicarlo
+
+Corregirlo
+
+Transformarlo
+
+Pero la programación actual va todavía más allá.
+</p>
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <p>⚡ Resumen rápido: "El futuro de la programación no es dejar de programar."</p>
+                    <div class="gif-box">
+                        <img src="https://i.pinimg.com/originals/05/2e/1d/052e1d81e5578699b9668851670c0548.gif" alt="Magic Web Meme">
+                    </div>
+                </div>
+            </div>
+        </div>
+                       
+                <!-- 15. Java & JavaScript -->
+        <div class="timeline-item left">
+            <div class="content">
+                <span class="year-badge">links</span>
+                <h3>bibliografias</h3>
+
+                <button class="btn-more" onclick="toggleMore(this)">🔍 Ver más</button>
+                <div class="more-info">
+                    <div>
+                    <img src="https://media1.tenor.com/m/wR7-O6Wv_hMAAAAC/bebe-lo-logramos-fernanfloo-bebe-lo-logramos-fernan.gif" alt="Magic Web Meme">
+                    </div>
+
+               <a href="https://www.epitech-it.es/evolucion-lenguajes-de-programacion/">link1</a>
+               <a href="https://cipsa.net/historia-de-la-programacion/">link2</a>
+             <a href="https://velneo.com/blog/evolucion-de-las-plataformas-de-programacion-desde-1980-hasta-hoy/">link3</a>
+                    
+                     <div class="more-info"></div>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleMore(btn) {
+            const moreSection = btn.nextElementSibling;
+            if (moreSection.classList.contains('active')) {
+                moreSection.classList.remove('active');
+                btn.innerHTML = '🔍 Ver más';
+            } else {
+                moreSection.classList.add('active');
+                btn.innerHTML = '✖️ Ocultar';
+            }
+        }
+    </script>
+
+</body>
+</html>
